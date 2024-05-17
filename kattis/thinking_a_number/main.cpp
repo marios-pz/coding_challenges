@@ -1,11 +1,12 @@
 // Copyright 2024 Marios Papazogloy
 
 #include <algorithm>
-#include <cstdio>
 #include <iostream>
-#include <limits>
 #include <string>
 #include <vector>
+
+#define MAX_BOUND 50001
+#define MIN_BOUND -1
 
 int main() {
   while (true) {
@@ -20,6 +21,9 @@ int main() {
     std::vector<int> lessers;
     std::vector<int> greaters;
 
+    int lower_bound = MIN_BOUND;
+    int upper_bound = MAX_BOUND;
+
     for (int i = 0; i < n; ++i) {
       int x;
       std::string word, _;
@@ -32,9 +36,6 @@ int main() {
         divisibles.push_back(x);
       }
     }
-
-    int lower_bound = -1; // greater than lower_bound
-    int upper_bound = std::numeric_limits<int>::max(); // less than upper_bound
 
     if (!lessers.empty()) {
       upper_bound = *std::min_element(lessers.begin(), lessers.end());
@@ -49,13 +50,15 @@ int main() {
       continue;
     }
 
-    if (upper_bound == std::numeric_limits<int>::max()) {
+    if (upper_bound >= MAX_BOUND) {
       std::cout << "infinite" << std::endl;
       continue;
     }
 
     std::vector<int> candidates;
     for (int num = lower_bound + 1; num < upper_bound; ++num) {
+      if (num <= 0) // IMPORTANT: ONLY POSITIVE NUMBERS!
+        continue;
       bool divisible = true;
       for (int divisor : divisibles) {
         if (num % divisor != 0) {
@@ -71,8 +74,8 @@ int main() {
     if (candidates.empty()) {
       std::cout << "none" << std::endl;
     } else {
-      for (size_t i = 1; i < candidates.size(); ++i) {
-        if (i > 1) {
+      for (size_t i = 0; i < candidates.size(); ++i) {
+        if (i > 0) {
           std::cout << " ";
         }
         std::cout << candidates[i];
